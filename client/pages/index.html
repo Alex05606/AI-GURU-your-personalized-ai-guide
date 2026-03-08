@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Guru - Virtual Friend</title>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+<style>
+
+body{
+font-family:'Inter',sans-serif;
+-webkit-tap-highlight-color:transparent;
+}
+
+/* Background */
+
+.bg-main-gradient{
+background:radial-gradient(circle at top right,#3b2b63,#1a1a2e);
+background-attachment:fixed;
+}
+
+/* Glass UI */
+
+.glass-card{
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(12px);
+border:1px solid rgba(255,255,255,0.1);
+}
+
+/* Floating Avatar */
+
+@keyframes float{
+0%{transform:translateY(0px);}
+50%{transform:translateY(-15px);}
+100%{transform:translateY(0px);}
+}
+
+.animate-float{
+animation:float 4s ease-in-out infinite;
+}
+
+/* VOICE WAVE */
+
+.sound-wave{
+position:absolute;
+display:flex;
+gap:4px;
+align-items:center;
+opacity:0;
+}
+
+.left-wave{
+left:-70px;
+}
+
+.right-wave{
+right:-70px;
+}
+
+.sound-wave div{
+width:4px;
+height:12px;
+background:#60a5fa;
+border-radius:3px;
+animation:wave 1s infinite ease-in-out;
+}
+
+.sound-wave div:nth-child(2){animation-delay:0.1s;}
+.sound-wave div:nth-child(3){animation-delay:0.2s;}
+.sound-wave div:nth-child(4){animation-delay:0.3s;}
+.sound-wave div:nth-child(5){animation-delay:0.4s;}
+
+@keyframes wave{
+0%{height:10px;}
+50%{height:40px;}
+100%{height:10px;}
+}
+
+.wave-active{
+opacity:1;
+}
+
+</style>
+
+</head>
+
+<body class="bg-main-gradient text-white min-h-screen flex flex-col overflow-y-auto">
+
+<header class="p-6 flex justify-between items-center">
+
+<div class="flex items-center space-x-2">
+<div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+<span class="text-sm font-medium tracking-wide opacity-80 uppercase">AI Guru Online</span>
+</div>
+
+</header>
+
+<main class="flex-grow flex flex-col items-center justify-center px-8 relative lg:px-20">
+
+<!-- Avatar Container -->
+
+<div class="relative w-full max-w-xs aspect-square flex items-center justify-center animate-float md:max-w-sm lg:max-w-md">
+
+<!-- LEFT SOUND WAVE -->
+
+<div id="wave-left" class="sound-wave left-wave">
+<div></div><div></div><div></div><div></div><div></div>
+</div>
+
+<!-- Avatar -->
+
+<img alt="AI Guru Character waving"
+class="w-full h-full object-contain rounded-full border-4 border-white/20 shadow-2xl"
+src="https://lh3.googleusercontent.com/aida-public/AB6AXuClA1pfGkuCmMaMxdMhkOH8KCkHz4DPqutfSO-Kd5LjcQc9324y8HcB76YoV_vAQOSaFmeCVsSAtmqcYg7ya7ltArMh4K9J1buJ3Il3lXZ9PWiiOeDeJsk-nqpL14eMR2tWxPmv_AuQRdPCFsw8eUrF-QakX4Um7u6YxEu0dNcP2X-l7mkPx3W4tM1VkKwv-pebyrVIvBHtdObzo8eZCEqkSiXU7EHOAah08odf1n9cZXSUmQcThTMfDKc72OmdulLKe7V3JvT7t-Y5"/>
+
+<!-- RIGHT SOUND WAVE -->
+
+<div id="wave-right" class="sound-wave right-wave">
+<div></div><div></div><div></div><div></div><div></div>
+</div>
+
+</div>
+
+<section class="mt-8 relative w-full max-w-2xl mx-auto">
+
+<div class="glass-card p-6 rounded-3xl shadow-xl relative max-h-[300px] overflow-y-auto">
+
+<p id="ai-bubble" class="text-lg md:text-xl font-medium leading-relaxed text-blue-50">
+Hi! I am your AI Guru. I am here to help you solve your problems.
+</p>
+
+</div>
+
+</section>
+
+</main>
+
+<footer class="p-6 pb-10">
+
+<div class="max-w-3xl mx-auto relative w-full">
+
+<div class="flex items-center glass-card rounded-2xl p-2 gap-2">
+
+<button id="voice-btn" class="p-3 text-blue-300 hover:text-white transition-colors">
+
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+<path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+stroke-linecap="round"
+stroke-linejoin="round"
+stroke-width="2"></path>
+
+</svg>
+
+</button>
+
+<button id="upload-btn" class="p-3 text-blue-300 hover:text-white transition-colors">
+
+<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M4 12l4-4m0 0l4 4m-4-4v12"/>
+
+</svg>
+
+</button>
+
+<input type="file" id="file-input" hidden>
+
+<input
+class="flex-grow bg-transparent border-none focus:ring-0 text-white placeholder-white/40 py-3 px-2"
+id="chat-input"
+placeholder="Ask me anything..."
+type="text"
+/>
+
+<button id="send-btn" aria-label="Send message"
+class="bg-indigo-600 hover:bg-indigo-500 text-white p-3 rounded-xl transition-all shadow-lg shadow-indigo-500/30">
+
+➤
+
+</button>
+
+</div>
+
+</div>
+
+</footer>
+
+<div class="fixed bottom-4 right-4 text-xs text-white/70">
+Created by <span class="font-semibold">Anirban Pal</span>
+</div>
+
+<script src="../js/chat.js"></script>
+
+</body>
+</html>
