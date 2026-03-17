@@ -1,6 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+const { createClient } = require("@libsql/client");
+
+const db = createClient({
+  url: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN
+});
+
 
 router.post("/chat", async (req, res) => {
 
@@ -56,6 +63,10 @@ Respond in a friendly and helpful way.
         );
 
         const aiReply = response.data.choices[0].message.content;
+        await db.execute({
+  sql: "INSERT INTO chats (user_message, ai_reply) VALUES (?, ?)",
+  args: [userMessage, aiReply]
+});
 
         console.log("AI Reply:", aiReply);
 
@@ -72,6 +83,24 @@ Respond in a friendly and helpful way.
         });
 
     }
+
+});
+router.get("/history", async (req, res) => {
+
+  try {
+
+    const result = await db.execute(
+      "SELECT * FROM chats ORDER BY id DESC LIMIT 20"
+    );
+
+    res.json(result.rows);
+
+  } catch (error) {
+
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch history" });
+
+  }
 
 });
 

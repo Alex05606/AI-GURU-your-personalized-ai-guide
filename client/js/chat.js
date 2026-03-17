@@ -1,164 +1,266 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const waveLeft = document.getElementById("wave-left");
-    const waveRight = document.getElementById("wave-right");
-    const bubble = document.getElementById("ai-bubble");
-    const input = document.getElementById("chat-input");
-    const sendButton = document.getElementById("send-btn");
-    const voiceBtn = document.getElementById("voice-btn");
-    const uploadBtn = document.getElementById("upload-btn");
-    const fileInput = document.getElementById("file-input");
+const waveLeft = document.getElementById("wave-left");
+const waveRight = document.getElementById("wave-right");
 
-    if (!bubble || !input || !sendButton) {
-        console.error("UI elements missing");
-        return;
-    }
+const chatContainer = document.getElementById("chat-container");
+const historyList = document.getElementById("history-list");
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const input = document.getElementById("chat-input");
+const sendButton = document.getElementById("send-btn");
 
-    /* ---------------- FILE UPLOAD ---------------- */
+const voiceBtn = document.getElementById("voice-btn");
+const uploadBtn = document.getElementById("upload-btn");
+const fileInput = document.getElementById("file-input");
 
-    if (uploadBtn && fileInput) {
+if (!chatContainer || !input || !sendButton) {
+console.error("UI elements missing");
+return;
+}
 
-        uploadBtn.addEventListener("click", () => {
-            fileInput.click();
-        });
+const SpeechRecognition =
+window.SpeechRecognition || window.webkitSpeechRecognition;
 
-        fileInput.addEventListener("change", () => {
+/* ---------------- FILE UPLOAD ---------------- */
 
-            const file = fileInput.files[0];
+if (uploadBtn && fileInput) {
 
-            if (file) {
-                bubble.textContent = "File uploaded: " + file.name;
-                console.log("Uploaded file:", file);
-            }
+uploadBtn.addEventListener("click", () => {
+fileInput.click();
+});
 
-        });
+fileInput.addEventListener("change", () => {
 
-    }
+const file = fileInput.files[0];
 
-    /* ---------------- SPEECH RECOGNITION ---------------- */
+if (file) {
 
-    if (SpeechRecognition) {
+const fileMsg = document.createElement("div");
 
-        const recognition = new SpeechRecognition();
+fileMsg.className = "text-left mb-2";
 
-        recognition.lang = "en-US";
-        recognition.continuous = false;
-        recognition.interimResults = false;
+fileMsg.innerHTML = `
+<div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
+File uploaded: ${file.name}
+</div>
+`;
 
-        if (voiceBtn) {
+chatContainer.appendChild(fileMsg);
 
-            voiceBtn.addEventListener("click", () => {
-                bubble.textContent = "Listening...";
-                recognition.start();
-            });
+}
 
-        }
+});
 
-        recognition.onresult = (event) => {
+}
 
-            const transcript = event.results[0][0].transcript;
+/* ---------------- SPEECH RECOGNITION ---------------- */
 
-            console.log("Voice Input:", transcript);
+if (SpeechRecognition) {
 
-            input.value = transcript;
+const recognition = new SpeechRecognition();
 
-            sendMessage();
+recognition.lang = "en-US";
+recognition.continuous = false;
+recognition.interimResults = false;
 
-        };
+if (voiceBtn) {
 
-        recognition.onerror = (event) => {
-            console.error("Speech recognition error:", event.error);
-            bubble.textContent = "Sorry, I couldn't hear you.";
-        };
+voiceBtn.addEventListener("click", () => {
 
-    } else {
+const listenMsg = document.createElement("div");
 
-        console.warn("Speech recognition not supported in this browser.");
+listenMsg.className = "text-center text-sm opacity-70 mb-2";
+listenMsg.textContent = "Listening...";
 
-    }
+chatContainer.appendChild(listenMsg);
 
-    /* ---------------- SEND MESSAGE ---------------- */
+recognition.start();
 
-    async function sendMessage() {
+});
 
-        const message = input.value.trim();
+}
 
-        if (!message) return;
+recognition.onresult = (event) => {
 
-        console.log("User:", message);
+const transcript = event.results[0][0].transcript;
 
-        bubble.textContent = "AI Guru is thinking...";
+console.log("Voice Input:", transcript);
 
-        try {
+input.value = transcript;
 
-            const response = await fetch("http://localhost:5000/api/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    message: message
-                })
-            });
+sendMessage();
 
-            const data = await response.json();
+};
 
-            console.log("AI:", data.reply);
+recognition.onerror = (event) => {
 
-            bubble.textContent = data.reply;
+console.error("Speech recognition error:", event.error);
 
-            /* ---------------- SPEECH SYNTHESIS ---------------- */
+};
 
-            const speech = new SpeechSynthesisUtterance(data.reply);
+} else {
 
-            speech.lang = "en-US";
-            speech.rate = 1;
-            speech.pitch = 1;
+console.warn("Speech recognition not supported in this browser.");
 
-            /* START WAVE ANIMATION */
+}
 
-            speech.onstart = () => {
+/* ---------------- SEND MESSAGE ---------------- */
 
-                if (waveLeft) waveLeft.classList.add("wave-active");
-                if (waveRight) waveRight.classList.add("wave-active");
+async function sendMessage() {
 
-            };
+const message = input.value.trim();
 
-            /* STOP WAVE ANIMATION */
+if (!message) return;
 
-            speech.onend = () => {
+console.log("User:", message);
 
-                if (waveLeft) waveLeft.classList.remove("wave-active");
-                if (waveRight) waveRight.classList.remove("wave-active");
+/* USER MESSAGE */
 
-            };
+const userDiv = document.createElement("div");
 
-            speechSynthesis.cancel();
-            speechSynthesis.speak(speech);
+userDiv.className = "text-right mb-3";
 
-        } catch (error) {
+userDiv.innerHTML = `
+<div class="inline-block bg-indigo-600 px-4 py-2 rounded-xl">
+${message}
+</div>
+`;
 
-            console.error("Error:", error);
-            bubble.textContent = "Something went wrong.";
+chatContainer.appendChild(userDiv);
 
-        }
+chatContainer.scrollTop = chatContainer.scrollHeight;
 
-        input.value = "";
+/* ADD TO SIDEBAR HISTORY */
 
-    }
+if (historyList) {
 
-    /* ---------------- BUTTON EVENTS ---------------- */
+const historyItem = document.createElement("div");
 
-    sendButton.addEventListener("click", sendMessage);
+historyItem.className = "history-item";
 
-    input.addEventListener("keydown", function (e) {
+historyItem.textContent = message.substring(0, 40);
 
-        if (e.key === "Enter") {
-            sendMessage();
-        }
+historyList.prepend(historyItem);
 
-    });
+}
+
+/* LOADING MESSAGE */
+
+const loadingDiv = document.createElement("div");
+
+loadingDiv.className = "text-left mb-3";
+
+loadingDiv.innerHTML = `
+<div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
+AI Guru is thinking...
+</div>
+`;
+
+chatContainer.appendChild(loadingDiv);
+
+chatContainer.scrollTop = chatContainer.scrollHeight;
+
+try {
+
+const response = await fetch("http://localhost:5000/api/chat", {
+
+method: "POST",
+
+headers: {
+"Content-Type": "application/json"
+},
+
+body: JSON.stringify({
+message: message
+})
+
+});
+
+const data = await response.json();
+
+console.log("AI:", data.reply);
+
+/* REMOVE LOADING */
+
+loadingDiv.remove();
+
+/* AI MESSAGE */
+
+const aiDiv = document.createElement("div");
+
+aiDiv.className = "text-left mb-3";
+
+aiDiv.innerHTML = `
+<div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
+${data.reply}
+</div>
+`;
+
+chatContainer.appendChild(aiDiv);
+
+chatContainer.scrollTop = chatContainer.scrollHeight;
+
+/* ---------------- SPEECH SYNTHESIS ---------------- */
+
+const speech = new SpeechSynthesisUtterance(data.reply);
+
+speech.lang = "en-US";
+speech.rate = 1;
+speech.pitch = 1;
+
+/* START WAVES */
+
+speech.onstart = () => {
+
+if (waveLeft) waveLeft.classList.add("wave-active");
+if (waveRight) waveRight.classList.add("wave-active");
+
+};
+
+/* STOP WAVES */
+
+speech.onend = () => {
+
+if (waveLeft) waveLeft.classList.remove("wave-active");
+if (waveRight) waveRight.classList.remove("wave-active");
+
+};
+
+speechSynthesis.cancel();
+speechSynthesis.speak(speech);
+
+} catch (error) {
+
+console.error("Error:", error);
+
+const errorDiv = document.createElement("div");
+
+errorDiv.className = "text-left mb-3";
+
+errorDiv.innerHTML = `
+<div class="inline-block bg-red-500 px-4 py-2 rounded-xl">
+Something went wrong.
+</div>
+`;
+
+chatContainer.appendChild(errorDiv);
+
+}
+
+input.value = "";
+
+}
+
+/* ---------------- BUTTON EVENTS ---------------- */
+
+sendButton.addEventListener("click", sendMessage);
+
+input.addEventListener("keydown", function (e) {
+
+if (e.key === "Enter") {
+sendMessage();
+}
+
+});
 
 });
