@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Guru - Log In</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-fixed-variant": "#001b86",
+              "surface-container": "#1e1b4b",
+              "surface-tint": "#7a8cf3",
+              "on-surface-variant": "#cbd5e1",
+              "primary-fixed-dim": "#7a8cf3",
+              "primary": "#818cf8",
+              "secondary-fixed": "#c0d1ff",
+              "inverse-on-surface": "#9b9d9e",
+              "on-background": "#f8fafc",
+              "on-primary-container": "#e0e7ff",
+              "tertiary-fixed": "#00e3fd",
+              "surface-bright": "#2e2a5e",
+              "on-tertiary": "#d8f8ff",
+              "surface-container-high": "#2e2a5e",
+              "primary-dim": "#3346a9",
+              "error-container": "#f74b6d",
+              "on-surface": "#f1f5f9",
+              "on-error": "#ffefef",
+              "on-tertiary-fixed-variant": "#005762",
+              "on-error-container": "#510017",
+              "tertiary-container": "#00e3fd",
+              "error": "#fb7185",
+              "surface-container-lowest": "#0f0e24",
+              "primary-fixed": "#8899ff",
+              "on-primary-fixed": "#000000",
+              "primary-container": "#4338ca",
+              "secondary": "#3b82f6",
+              "inverse-surface": "#f8fafc",
+              "tertiary-dim": "#005863",
+              "surface-dim": "#13112b",
+              "on-secondary-container": "#dbeafe",
+              "on-tertiary-fixed": "#003840",
+              "surface-container-low": "#1a163a",
+              "tertiary": "#2dd4bf",
+              "outline": "#64748b",
+              "secondary-dim": "#004aad",
+              "tertiary-fixed-dim": "#00d4ec",
+              "error-dim": "#a70138",
+              "on-secondary-fixed": "#003076",
+              "on-tertiary-container": "#004d57",
+              "secondary-fixed-dim": "#acc3ff",
+              "surface": "#0c0b1f",
+              "secondary-container": "#1d4ed8",
+              "inverse-primary": "#8596ff",
+              "background": "#0c0b1f",
+              "outline-variant": "#475569",
+              "surface-container-highest": "#332f63",
+              "on-secondary": "#ffffff",
+              "on-secondary-fixed-variant": "#004baf",
+              "surface-variant": "#1e1b4b",
+              "on-primary": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c0b1f;
+        }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-white/5">
+<div class="flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="text-primary active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-manrope font-bold tracking-tight text-lg text-primary">Log In</h1>
+</div>
+<div class="font-manrope font-black text-primary tracking-tighter text-xl">
+            AI Guru
+        </div>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden ring-1 ring-white/10">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="Close up portrait of a professional woman with a friendly expression in a modern office environment with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-zLL-isWX3YKPgWRwQL-GBES_uV1GrF7B4msPrchZ2iHCQtl8xH1vQD1GvF26GyQtyFmeNJxQlOz7hDpY5DtB-Ir12j--6MlWzNwsinUCnzTrHaV0fo3VLzCesKwQynlnB7nLAlk13dlw-ay7zbkOZ6_p98UTmyGcV6JVn4CBbwO47b5OM5_V2db7_lvAZX9Dtme1JI2nGVBE_VjVV3nAXf89e_ynsdF6kWQ8ssU9bNFFo1O1wkSCi3ADSWcqzSLOdiCVVTwyT-br"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center px-4 pt-24 pb-12">
+<div class="w-full max-w-md">
+<!-- Asymmetric Editorial Header -->
+<div class="mb-12 ml-4">
+<span class="font-label text-primary font-semibold tracking-widest uppercase text-[10px] block mb-2">Welcome Back</span>
+<h2 class="font-headline text-4xl font-extrabold text-on-background tracking-tight leading-none">
+                Enter the <br/> <span class="text-primary">Sanctuary.</span>
+</h2>
+<p class="font-body text-on-surface-variant mt-4 max-w-[280px] leading-relaxed">
+                Resume your journey with your digital mentor and unlock new levels of insight.
+            </p>
+</div>
+<!-- Login Card (Glassmorphism & Tonal Layering) -->
+<div class="bg-surface-container rounded-xl p-8 border border-white/5 shadow-2xl relative overflow-hidden">
+<!-- Decorative AI Glow -->
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-24 -left-24 w-48 h-48 bg-secondary/10 rounded-full blur-3xl"></div>
+<form class="space-y-6 relative z-10">
+<!-- Email Input -->
+<div class="space-y-1.5">
+<label class="block font-label text-xs font-semibold text-on-surface-variant ml-1" for="email">Email Address</label>
+<div class="relative group">
+<input class="w-full px-4 py-3 bg-surface-container-low border border-white/5 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-outline-variant text-on-surface" id="email" placeholder="mentor@aiguru.com" type="email"/>
+</div>
+<p class="font-body text-[11px] text-on-surface-variant/50 ml-1">The email linked to your learning profile.</p>
+</div>
+<!-- Password Input -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center ml-1">
+<label class="block font-label text-xs font-semibold text-on-surface-variant" for="password">Password</label>
+<a class="font-label text-xs text-primary font-medium hover:text-primary-fixed transition-colors" href="#">Forgot Password?</a>
+</div>
+<div class="relative group">
+<input class="w-full px-4 py-3 bg-surface-container-low border border-white/5 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-outline-variant text-on-surface" id="password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white font-manrope font-bold rounded-lg shadow-lg shadow-primary/20 active:scale-[0.98] transition-all hover:brightness-110 flex items-center justify-center gap-2" type="submit">
+                    Log In
+                    <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<!-- Signup Redirect -->
+<div class="mt-8 pt-6 border-t border-white/5 text-center">
+<p class="font-body text-sm text-on-surface-variant">
+                    New to the mentorship? 
+                    <a class="text-primary font-bold ml-1 hover:text-primary-fixed transition-colors" href="#">Sign Up</a>
+</p>
+</div>
+</div>
+<!-- Visual Support / Bento Style Element -->
+<div class="mt-8 grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low border border-white/5 p-4 rounded-xl flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary shadow-sm ring-1 ring-white/5">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+</div>
+<div>
+<div class="font-label text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Secure</div>
+<div class="font-body text-xs text-on-surface">Vault encryption</div>
+</div>
+</div>
+<div class="bg-surface-container-low border border-white/5 p-4 rounded-xl flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary shadow-sm ring-1 ring-white/5">
+<span class="material-symbols-outlined text-[20px]" data-icon="bolt">bolt</span>
+</div>
+<div>
+<div class="font-label text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Sync</div>
+<div class="font-body text-xs text-on-surface">Real-time learning</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,3 +1,9 @@
+let currentChatId = localStorage.getItem("chatId");
+let uploadedFileContent = null;
+if (!currentChatId) {
+    currentChatId = crypto.randomUUID();
+    localStorage.setItem("chatId", currentChatId);
+}
 document.addEventListener("DOMContentLoaded", () => {
 
 const waveLeft = document.getElementById("wave-left");
@@ -25,33 +31,70 @@ window.SpeechRecognition || window.webkitSpeechRecognition;
 
 if (uploadBtn && fileInput) {
 
-uploadBtn.addEventListener("click", () => {
-fileInput.click();
-});
+    uploadBtn.addEventListener("click", () => {
+        fileInput.click();
+    });
 
-fileInput.addEventListener("change", () => {
+    fileInput.addEventListener("change", async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
 
-const file = fileInput.files[0];
+        const loadingMsg = document.createElement("div");
+        loadingMsg.className = "text-left mb-2";
+        loadingMsg.innerHTML = `
+            <div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
+                ⏳ Reading file...
+            </div>
+        `;
+        chatContainer.appendChild(loadingMsg);
 
-if (file) {
+        if (file.type === "application/pdf") {
+            const formData = new FormData();
+            formData.append("pdf", file);
 
-const fileMsg = document.createElement("div");
+            try {
+                const response = await fetch("http://localhost:5000/api/upload-pdf", {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await response.json();
+                uploadedFileContent = data.text;
 
-fileMsg.className = "text-left mb-2";
+                loadingMsg.remove();
+                const fileMsg = document.createElement("div");
+                fileMsg.className = "text-left mb-2";
+                fileMsg.innerHTML = `
+                    <div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
+                        ✅ PDF ready: <strong>${file.name}</strong>. You can now ask questions about it.
+                    </div>
+                `;
+                chatContainer.appendChild(fileMsg);
 
-fileMsg.innerHTML = `
-<div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
-File uploaded: ${file.name}
-</div>
-`;
+            } catch (error) {
+                console.error("PDF upload error:", error);
+                loadingMsg.remove();
+            }
 
-chatContainer.appendChild(fileMsg);
+        } else {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                uploadedFileContent = e.target.result;
+                loadingMsg.remove();
+                const fileMsg = document.createElement("div");
+                fileMsg.className = "text-left mb-2";
+                fileMsg.innerHTML = `
+                    <div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
+                        ✅ File ready: <strong>${file.name}</strong>. You can now ask questions about it.
+                    </div>
+                `;
+                chatContainer.appendChild(fileMsg);
+            };
+            reader.readAsText(file);
+        }
+    });
 
 }
 
-});
-
-}
 
 /* ---------------- SPEECH RECOGNITION ---------------- */
 
@@ -104,11 +147,122 @@ console.warn("Speech recognition not supported in this browser.");
 
 }
 
+/* ---------------- LOAD CHAT SESSIONS ---------------- */
+
+async function loadSessions() {
+    try {
+        const response = await fetch("http://localhost:5000/api/sessions");
+        const sessions = await response.json();
+
+        historyList.innerHTML = "";
+
+        const newChatBtn = document.createElement("div");
+        newChatBtn.className = "history-item flex justify-between items-center bg-indigo-600/40 cursor-pointer";
+        newChatBtn.innerHTML = `<span>➕ New Chat</span>`;
+        newChatBtn.addEventListener("click", startNewChat);
+        historyList.appendChild(newChatBtn);
+
+        sessions.forEach(session => {
+            const item = document.createElement("div");
+            item.className = "history-item flex justify-between items-center";
+            item.innerHTML = `
+                <span class="truncate flex-1 cursor-pointer" data-id="${session.chat_id}">
+                    ${session.chat_title || "Chat"}
+                </span>
+                <button class="delete-btn text-red-400 hover:text-red-200 ml-2 text-xs" data-id="${session.chat_id}">
+                    🗑️
+                </button>
+            `;
+
+            item.querySelector("span").addEventListener("click", () => {
+                loadChatHistory(session.chat_id);
+            });
+
+            item.querySelector(".delete-btn").addEventListener("click", async (e) => {
+                e.stopPropagation();
+                await deleteSession(session.chat_id);
+            });
+
+            historyList.appendChild(item);
+        });
+
+    } catch (error) {
+        console.error("Failed to load sessions:", error);
+    }
+}
+
+/* ---------------- LOAD A SPECIFIC CHAT ---------------- */
+
+async function loadChatHistory(chatId) {
+    try {
+        currentChatId = chatId;
+        localStorage.setItem("chatId", chatId);
+
+        const response = await fetch(`http://localhost:5000/api/history/${chatId}`);
+        const messages = await response.json();
+
+        chatContainer.innerHTML = "";
+
+        messages.forEach(msg => {
+            const userDiv = document.createElement("div");
+            userDiv.className = "text-right mb-3";
+            userDiv.innerHTML = `
+                <div class="inline-block bg-indigo-600 px-4 py-2 rounded-xl">
+                    ${msg.user_message}
+                </div>
+            `;
+            chatContainer.appendChild(userDiv);
+
+            const aiDiv = document.createElement("div");
+            aiDiv.className = "text-left mb-3";
+            aiDiv.innerHTML = `
+                <div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
+                    ${msg.ai_reply}
+                </div>
+            `;
+            chatContainer.appendChild(aiDiv);
+        });
+
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    } catch (error) {
+        console.error("Failed to load chat history:", error);
+    }
+}
+
+/* ---------------- DELETE SESSION ---------------- */
+
+async function deleteSession(chatId) {
+    try {
+        await fetch(`http://localhost:5000/api/session/${chatId}`, {
+            method: "DELETE"
+        });
+        if (currentChatId === chatId) {
+            startNewChat();
+        }
+        loadSessions();
+    } catch (error) {
+        console.error("Failed to delete session:", error);
+    }
+}
+
+/* ---------------- NEW CHAT ---------------- */
+
+function startNewChat() {
+    currentChatId = crypto.randomUUID();
+    localStorage.setItem("chatId", currentChatId);
+    uploadedFileContent = null;
+    chatContainer.innerHTML = `
+        <p class="text-blue-50">Hi! I am your AI Guru. I am here to help you solve your problems.</p>
+    `;
+    loadSessions();
+}
 /* ---------------- SEND MESSAGE ---------------- */
 
 async function sendMessage() {
 
 const message = input.value.trim();
+console.log("File content being sent:", uploadedFileContent ? "YES - " + uploadedFileContent.length + " chars" : "NULL");
 
 if (!message) return;
 
@@ -130,19 +284,7 @@ chatContainer.appendChild(userDiv);
 
 chatContainer.scrollTop = chatContainer.scrollHeight;
 
-/* ADD TO SIDEBAR HISTORY */
 
-if (historyList) {
-
-const historyItem = document.createElement("div");
-
-historyItem.className = "history-item";
-
-historyItem.textContent = message.substring(0, 40);
-
-historyList.prepend(historyItem);
-
-}
 
 /* LOADING MESSAGE */
 
@@ -171,7 +313,9 @@ headers: {
 },
 
 body: JSON.stringify({
-message: message
+    message: message,
+    chatId: currentChatId,
+    fileContent: uploadedFileContent
 })
 
 });
@@ -199,6 +343,7 @@ ${data.reply}
 chatContainer.appendChild(aiDiv);
 
 chatContainer.scrollTop = chatContainer.scrollHeight;
+loadSessions();
 
 /* ---------------- SPEECH SYNTHESIS ---------------- */
 
@@ -262,5 +407,8 @@ sendMessage();
 }
 
 });
-
+loadSessions();
+if (currentChatId) {
+    loadChatHistory(currentChatId);
+}
 });

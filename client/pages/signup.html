@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign Up | AI Guru</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-fixed-variant": "#001b86",
+              "surface-container": "#1e1b4b",
+              "surface-tint": "#4052b6",
+              "on-surface-variant": "#94a3b8",
+              "primary-fixed-dim": "#7a8cf3",
+              "primary": "#6366f1",
+              "secondary-fixed": "#c0d1ff",
+              "inverse-on-surface": "#9b9d9e",
+              "on-background": "#f8fafc",
+              "on-primary-container": "#e0e7ff",
+              "tertiary-fixed": "#00e3fd",
+              "surface-bright": "#1e1b4b",
+              "on-tertiary": "#d8f8ff",
+              "surface-container-high": "#312e81",
+              "primary-dim": "#4f46e5",
+              "error-container": "#f74b6d",
+              "on-surface": "#f8fafc",
+              "on-tertiary-fixed-variant": "#005762",
+              "on-error-container": "#510017",
+              "tertiary-container": "#00e3fd",
+              "error": "#fb7185",
+              "surface-container-lowest": "#1e1b4b",
+              "primary-fixed": "#8899ff",
+              "on-primary-fixed": "#000000",
+              "primary-container": "#4f46e5",
+              "secondary": "#3b82f6",
+              "inverse-surface": "#f8fafc",
+              "tertiary-dim": "#005863",
+              "surface-dim": "#0f172a",
+              "on-secondary-container": "#dbeafe",
+              "on-tertiary-fixed": "#003840",
+              "surface-container-low": "#312e81",
+              "tertiary": "#06b6d4",
+              "outline": "#64748b",
+              "secondary-dim": "#2563eb",
+              "tertiary-fixed-dim": "#00d4ec",
+              "error-dim": "#a70138",
+              "on-secondary-fixed": "#003076",
+              "on-tertiary-container": "#004d57",
+              "secondary-fixed-dim": "#acc3ff",
+              "surface": "#0f172a",
+              "secondary-container": "#1e40af",
+              "inverse-primary": "#8596ff",
+              "background": "#0f172a",
+              "outline-variant": "#475569",
+              "surface-container-highest": "#3730a3",
+              "on-secondary": "#eff6ff",
+              "on-secondary-fixed-variant": "#004baf",
+              "surface-variant": "#334155",
+              "on-primary": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(30, 27, 75, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 font-body text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md shadow-sm shadow-indigo-900/20">
+<div class="flex items-center justify-between px-6 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-800/50 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-slate-400">arrow_back</span>
+</button>
+<h1 class="font-manrope font-bold tracking-tight text-lg text-slate-100">Create Account</h1>
+</div>
+<div class="font-manrope font-black text-indigo-400 tracking-tighter text-xl">
+                AI Guru
+            </div>
+</div>
+</header>
+<main class="min-h-screen pt-24 pb-12 flex flex-col items-center justify-center px-4">
+<!-- Main Form Container -->
+<div class="w-full max-w-md">
+<!-- Hero Heading Section -->
+<div class="mb-10 text-center md:text-left">
+<h2 class="font-headline font-extrabold text-4xl text-white tracking-tight mb-3">
+                    Begin your <span class="text-indigo-400">learning</span> journey
+                </h2>
+<p class="text-slate-400 font-body leading-relaxed max-w-sm">
+                    Join the elite community of students guided by artificial intelligence.
+                </p>
+</div>
+<!-- Form Card -->
+<div class="bg-slate-900/50 border border-slate-800 rounded-xl p-8 shadow-2xl space-y-6">
+<form class="space-y-5">
+<!-- Full Name -->
+<div class="space-y-1.5">
+<label class="font-label text-sm font-semibold text-slate-300 flex items-center gap-2" for="name">
+<span class="material-symbols-outlined text-base">person</span>
+                            Full Name
+                        </label>
+<input class="w-full bg-slate-800/50 border-0 border-b-2 border-transparent focus:border-indigo-500 focus:ring-0 rounded-lg p-3 text-white placeholder:text-slate-500 transition-all font-body" id="name" name="name" placeholder="Alex Mentor" type="text"/>
+<p class="text-[10px] text-slate-500 uppercase tracking-wider font-medium pl-1">As you'd like us to call you</p>
+</div>
+<!-- Email Address -->
+<div class="space-y-1.5">
+<label class="font-label text-sm font-semibold text-slate-300 flex items-center gap-2" for="email">
+<span class="material-symbols-outlined text-base">mail</span>
+                            Email Address
+                        </label>
+<input class="w-full bg-slate-800/50 border-0 border-b-2 border-transparent focus:border-indigo-500 focus:ring-0 rounded-lg p-3 text-white placeholder:text-slate-500 transition-all font-body" id="email" name="email" placeholder="alex@guru.com" type="email"/>
+<p class="text-[10px] text-slate-500 uppercase tracking-wider font-medium pl-1">We'll never share your email</p>
+</div>
+<!-- Password Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Password -->
+<div class="space-y-1.5">
+<label class="font-label text-sm font-semibold text-slate-300 flex items-center gap-2" for="password">
+<span class="material-symbols-outlined text-base">lock</span>
+                                Password
+                            </label>
+<input class="w-full bg-slate-800/50 border-0 border-b-2 border-transparent focus:border-indigo-500 focus:ring-0 rounded-lg p-3 text-white placeholder:text-slate-500 transition-all font-body" id="password" name="password" placeholder="••••••••" type="password"/>
+</div>
+<!-- Confirm Password -->
+<div class="space-y-1.5">
+<label class="font-label text-sm font-semibold text-slate-300 flex items-center gap-2" for="confirm_password">
+<span class="material-symbols-outlined text-base">shield</span>
+                                Confirm
+                            </label>
+<input class="w-full bg-slate-800/50 border-0 border-b-2 border-transparent focus:border-indigo-500 focus:ring-0 rounded-lg p-3 text-white placeholder:text-slate-500 transition-all font-body" id="confirm_password" name="confirm_password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Sign Up Button -->
+<div class="pt-4">
+<button class="w-full py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-headline font-bold text-base shadow-lg shadow-indigo-500/20 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2" type="submit">
+                            Sign Up
+                            <span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</div>
+</form>
+<!-- Alternate Login -->
+<div class="pt-4 flex flex-col items-center gap-4">
+<div class="flex items-center gap-3 w-full">
+<div class="h-[1px] flex-1 bg-slate-800"></div>
+<span class="text-slate-500 font-label text-xs uppercase tracking-widest">or continue with</span>
+<div class="h-[1px] flex-1 bg-slate-800"></div>
+</div>
+<div class="flex gap-4 w-full">
+<button class="flex-1 flex items-center justify-center py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors active:scale-95 border border-slate-700">
+<span class="material-symbols-outlined text-slate-300">google</span>
+</button>
+<button class="flex-1 flex items-center justify-center py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors active:scale-95 border border-slate-700">
+<span class="material-symbols-outlined text-slate-300">ios</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer Link -->
+<div class="mt-8 text-center">
+<p class="font-body text-slate-400">
+                    Already have an account? 
+                    <a class="text-indigo-400 font-bold ml-1 hover:underline underline-offset-4 decoration-2" href="#">Log In</a>
+</p>
+</div>
+</div>
+<!-- Decorative Mentor Hint -->
+<div class="fixed right-12 bottom-12 hidden xl:flex items-start gap-4 max-w-xs p-5 glass-panel rounded-2xl border border-indigo-500/20 shadow-xl">
+<div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-indigo-400" data-weight="fill" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="space-y-1">
+<p class="font-headline font-bold text-sm text-indigo-300">Guru Tip</p>
+<p class="font-body text-xs text-slate-300 leading-relaxed">
+                    "Setting a clear learning objective today makes your personalized curriculum more effective tomorrow."
+                </p>
+</div>
+</div>
+</main>
+<!-- Background Decoration -->
+<div class="fixed inset-0 -z-10 overflow-hidden">
+<div class="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-indigo-600/10 blur-[120px]"></div>
+<div class="absolute top-[60%] -right-[5%] w-[40%] h-[40%] rounded-full bg-blue-600/10 blur-[100px]"></div>
+</div>
+</body></html>
