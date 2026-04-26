@@ -1,65 +1,108 @@
-# AI Guru – Your Personalized AI Guide 🤖
+# 🤖 AI Guru – Personal Learning Assistant
 
-AI Guru is a voice-enabled AI assistant that allows users to interact with an AI through text or speech.  
-It provides intelligent responses, voice output, and a clean animated interface.
+AI Guru is an AI-powered personal learning assistant designed to make learning interactive, personalized, and accessible.  
+It acts like a smart tutor that not only answers questions but also helps users learn through conversation, voice interaction, and document-based queries.
+
+---
+
+## 🚀 Live Demo
+👉 https://ai-guru-your-personalized-ai-guide.onrender.com
+
+---
 
 ## ✨ Features
 
-- 🎤 Voice input (Speech Recognition)
-- 🔊 Voice output (Text-to-Speech)
-- 🤖 AI-powered responses
-- 📂 File upload support
-- 🌊 Animated sound waves when AI speaks
-- 💬 Clean chatbot interface
-- ⚡ Fast Node.js backend
+### 🔐 User Authentication
+- Secure signup and login system  
+- Personalized user data and private chat history  
+
+### 💬 Smart Chat Interface
+- Ask questions and get clear, structured answers  
+- Smooth conversational experience  
+
+### 🧠 Chat History
+- View previous conversations anytime  
+- Continue learning from past chats  
+- Delete chats when needed  
+
+### 🎤 Voice Interaction
+- Speak directly with the bot  
+- AI responds with clear voice output  
+
+### 📄 Document Support
+- Upload PDFs and text files  
+- Ask questions based on uploaded content  
+
+### ⚡ Chat Controls
+- Start a new conversation anytime  
+- Delete old chats  
+- Logout functionality with redirect to landing page  
+
+---
 
 ## 🛠️ Tech Stack
 
-Frontend:
-- HTML
-- Tailwind CSS
-- JavaScript
+> (Update this section based on what you actually used)
 
-Backend:
-- Node.js
-- Express.js
+- **Frontend:** React / HTML / CSS / JavaScript  
+- **Backend:** Node.js / Express / Python (if used)  
+- **Database:** (MongoDB / Firebase / etc.)  
+- **AI Integration:** OpenAI API / other LLM APIs  
+- **Deployment:** Render  
 
-AI API:
-- Groq API
+---
 
-## 📂 Project Structure
-AI-GURU
-│
-├── client
-│ ├── js
-│ │ └── chat.js
-│ └── pages
-│ └── index.html
-│
-├── server
-│ ├── routes
-│ │ └── chatRoutes.js
-│ └── server.js
-│
-├── .gitignore
-├── package.json
-└── package-lock.json
-## 🚀 How to Run the Project
+## 💡 How It Works
 
-1️⃣ Clone the repository
-git clone https://github.com/Alex05606/AI-GURU-your-personalized-ai-guide.git
-2️⃣ Install dependencies
-npm install
-3️⃣ Create `.env` file
-GROQ_API_KEY=your_api_key_here
-PORT=5000
-4️⃣ Run server
-node server/server.js
-5️⃣ Open frontend
-client/pages/index.html
+1. User creates an account and logs in  
+2. Enters the chat interface  
+3. Can:
+   - Type queries  
+   - Speak to the bot  
+   - Upload documents  
+4. AI processes input and responds with:
+   - Text answers  
+   - Voice output  
+5. Conversations are saved in chat history  
+6. User can revisit, delete, or start new chats anytime  
 
-## 👨‍💻 Author
-**Anirban Pal**
-B.Tech CSE (Artificial Intelligence)  
-IEM Kolkata
-⭐ If you like this project, consider giving it a star.
+---
+
+## 📌 Current Limitations
+
+- No image generation or image understanding  
+- No audio/video generation  
+- Primarily text-based AI system  
+
+---
+
+## 🚀 Future Improvements
+
+- 🖼️ Image generation & analysis  
+- 🎥 Audio & video capabilities  
+- 🧠 Advanced personalization (learning memory)  
+- 📊 Learning progress tracking  
+
+---
+
+## 🎯 Motivation
+
+Most AI tools focus on answering questions.  
+AI Guru is built to act as a **learning companion**, making studying more interactive through voice, memory, and document-based learning.
+
+---
+
+## 🤝 Contributing
+
+Contributions, ideas, and feedback are welcome!  
+Feel free to fork this repo and improve it.
+
+---
+
+## 📬 Contact
+
+If you liked the project or have suggestions, feel free to connect!
+
+---
+
+⭐ If you find this project useful, consider giving it a star!
