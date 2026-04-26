@@ -1,3 +1,7 @@
+const API_BASE = window.location.hostname === "localhost"
+  ? "http://localhost:5000"
+  : "https://ai-guru-your-personalized-ai-guide.onrender.com";
+
 let currentChatId = localStorage.getItem("chatId");
 let uploadedFileContent = null;
 const token = localStorage.getItem("token"); // ✅ MOVED OUTSIDE
@@ -22,7 +26,7 @@ const uploadBtn = document.getElementById("upload-btn");
 const fileInput = document.getElementById("file-input");
 
 if (!token) {
-  window.location.href = "login.html";
+  window.location.href = "/login.html";
   return; // ✅ added return so nothing else runs
 }
 
@@ -60,7 +64,7 @@ if (uploadBtn && fileInput) {
             formData.append("pdf", file);
 
             try {
-                const response = await fetch("http://localhost:5000/api/upload-pdf", {
+                const response = await fetch("https://ai-guru-your-personalized-ai-guide.onrender.com/api/upload-pdf", {
                     method: "POST",
                     body: formData
                 });
@@ -158,7 +162,7 @@ console.warn("Speech recognition not supported in this browser.");
 
 async function loadSessions() {
     try {
-        const response = await fetch("http://localhost:5000/api/sessions", {
+        const response = await fetch("https://ai-guru-your-personalized-ai-guide.onrender.com/api/sessions", {
             headers: { "Authorization": `Bearer ${token}` } // ✅ ADDED TOKEN
         });
 
@@ -213,7 +217,7 @@ async function loadChatHistory(chatId) {
         currentChatId = chatId;
         localStorage.setItem("chatId", chatId);
 
-        const response = await fetch(`http://localhost:5000/api/history/${chatId}`, {
+        const response = await fetch(`https://ai-guru-your-personalized-ai-guide.onrender.com/api/history/${chatId}`, {
             headers: { "Authorization": `Bearer ${token}` } // ✅ ADDED TOKEN
         });
 
@@ -257,7 +261,7 @@ async function loadChatHistory(chatId) {
 
 async function deleteSession(chatId) {
     try {
-        await fetch(`http://localhost:5000/api/session/${chatId}`, {
+        await fetch(`https://ai-guru-your-personalized-ai-guide.onrender.com/api/session/${chatId}`, {
             method: "DELETE",
             headers: { "Authorization": `Bearer ${token}` } // ✅ ADDED TOKEN
         });
@@ -328,7 +332,7 @@ chatContainer.scrollTop = chatContainer.scrollHeight;
 
 try {
 
-const response = await fetch("http://localhost:5000/api/chat", {
+const response = await fetch("https://ai-guru-your-personalized-ai-guide.onrender.com/api/chat", {
 
 method: "POST",
 
