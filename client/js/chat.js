@@ -1,5 +1,7 @@
 let currentChatId = localStorage.getItem("chatId");
 let uploadedFileContent = null;
+const token = localStorage.getItem("token"); // ✅ MOVED OUTSIDE
+
 if (!currentChatId) {
     currentChatId = crypto.randomUUID();
     localStorage.setItem("chatId", currentChatId);
@@ -18,6 +20,11 @@ const sendButton = document.getElementById("send-btn");
 const voiceBtn = document.getElementById("voice-btn");
 const uploadBtn = document.getElementById("upload-btn");
 const fileInput = document.getElementById("file-input");
+
+if (!token) {
+  window.location.href = "login.html";
+  return; // ✅ added return so nothing else runs
+}
 
 if (!chatContainer || !input || !sendButton) {
 console.error("UI elements missing");
@@ -151,8 +158,16 @@ console.warn("Speech recognition not supported in this browser.");
 
 async function loadSessions() {
     try {
-        const response = await fetch("http://localhost:5000/api/sessions");
+        const response = await fetch("http://localhost:5000/api/sessions", {
+            headers: { "Authorization": `Bearer ${token}` } // ✅ ADDED TOKEN
+        });
+
         const sessions = await response.json();
+
+        if (!Array.isArray(sessions)) { // ✅ ADDED SAFETY CHECK
+            console.error("Sessions error:", sessions);
+            return;
+        }
 
         historyList.innerHTML = "";
 
@@ -198,8 +213,16 @@ async function loadChatHistory(chatId) {
         currentChatId = chatId;
         localStorage.setItem("chatId", chatId);
 
-        const response = await fetch(`http://localhost:5000/api/history/${chatId}`);
+        const response = await fetch(`http://localhost:5000/api/history/${chatId}`, {
+            headers: { "Authorization": `Bearer ${token}` } // ✅ ADDED TOKEN
+        });
+
         const messages = await response.json();
+
+        if (!Array.isArray(messages)) { // ✅ ADDED SAFETY CHECK
+            console.error("History error:", messages);
+            return;
+        }
 
         chatContainer.innerHTML = "";
 
@@ -235,7 +258,8 @@ async function loadChatHistory(chatId) {
 async function deleteSession(chatId) {
     try {
         await fetch(`http://localhost:5000/api/session/${chatId}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` } // ✅ ADDED TOKEN
         });
         if (currentChatId === chatId) {
             startNewChat();
@@ -309,7 +333,8 @@ const response = await fetch("http://localhost:5000/api/chat", {
 method: "POST",
 
 headers: {
-"Content-Type": "application/json"
+"Content-Type": "application/json",
+"Authorization": `Bearer ${token}`
 },
 
 body: JSON.stringify({

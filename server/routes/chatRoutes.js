@@ -5,6 +5,7 @@ const { createClient } = require("@libsql/client");
 const multer = require("multer");
 const pdfParse = require("pdf-parse");
 const upload = multer({ storage: multer.memoryStorage() });
+const authMiddleware = require("../middleware/authMiddleware");
 
 const db = createClient({
   url: process.env.TURSO_DATABASE_URL,
@@ -30,7 +31,7 @@ router.post("/upload-pdf", upload.single("pdf"), async (req, res) => {
 
 // ================= CHAT =================
 
-router.post("/chat", async (req, res) => {
+router.post("/chat", authMiddleware, async (req, res) => {
 
     const userMessage = req.body.message;
     const chatId = req.body.chatId;
@@ -80,14 +81,16 @@ router.post("/chat", async (req, res) => {
         );
 
         const aiReply = response.data.choices[0].message.content;
+        const userId = req.user.id;
 
         try {
             await db.execute({
                 sql: `
-                    INSERT INTO chats (chat_id, chat_title, user_message, ai_reply)
-                    VALUES (:chatId, :title, :msg, :reply)
+                    INSERT INTO chats (user_id, chat_id, chat_title, user_message, ai_reply)
+                    VALUES (:userId, :chatId, :title, :msg, :reply)
                 `,
                 args: {
+                    userId: req.user.id,
                     chatId: chatId,
                     title: userMessage.substring(0, 40),
                     msg: userMessage,
@@ -120,7 +123,7 @@ router.post("/chat", async (req, res) => {
 
 // ================= HISTORY =================
 
-router.get("/history/:chatId", async (req, res) => {
+router.get("/history/:chatId", authMiddleware, async (req, res) => {
 
     const chatId = req.params.chatId;
 
@@ -146,17 +149,19 @@ router.get("/history/:chatId", async (req, res) => {
 
 });
 
-// ================= GET ALL CHAT SESSIONS =================
+// ================= GET ALL CHAT SESSIONS ================= ✅ FIXED: one route, with user_id filter
 
-router.get("/sessions", async (req, res) => {
+router.get("/sessions", authMiddleware, async (req, res) => {
     try {
         const result = await db.execute({
             sql: `
                 SELECT chat_id, chat_title, MIN(created_at) as started_at
                 FROM chats
+                WHERE user_id = :userId
                 GROUP BY chat_id
                 ORDER BY started_at DESC
-            `
+            `,
+            args: { userId: req.user.id } // ✅ ADDED user_id filter
         });
         res.json(result.rows);
     } catch (error) {
@@ -165,9 +170,9 @@ router.get("/sessions", async (req, res) => {
     }
 });
 
-// ================= DELETE A CHAT SESSION =================
+// ================= DELETE A CHAT SESSION ================= ✅ FIXED: one route only
 
-router.delete("/session/:chatId", async (req, res) => {
+router.delete("/session/:chatId", authMiddleware, async (req, res) => {
     const chatId = req.params.chatId;
     try {
         await db.execute({
@@ -180,38 +185,5 @@ router.delete("/session/:chatId", async (req, res) => {
         res.status(500).json({ error: "Failed to delete session" });
     }
 });
-// ================= GET ALL CHAT SESSIONS =================
 
-router.get("/sessions", async (req, res) => {
-    try {
-        const result = await db.execute({
-            sql: `
-                SELECT chat_id, chat_title, MIN(created_at) as started_at
-                FROM chats
-                GROUP BY chat_id
-                ORDER BY started_at DESC
-            `
-        });
-        res.json(result.rows);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Failed to fetch sessions" });
-    }
-});
-
-// ================= DELETE A CHAT SESSION =================
-
-router.delete("/session/:chatId", async (req, res) => {
-    const chatId = req.params.chatId;
-    try {
-        await db.execute({
-            sql: `DELETE FROM chats WHERE chat_id = :chatId`,
-            args: { chatId }
-        });
-        res.json({ success: true });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Failed to delete session" });
-    }
-});
 module.exports = router;

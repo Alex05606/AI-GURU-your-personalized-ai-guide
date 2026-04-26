@@ -161,7 +161,7 @@
 </div>
 <!-- Sign Up Button -->
 <div class="pt-4">
-<button class="w-full py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-headline font-bold text-base shadow-lg shadow-indigo-500/20 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2" type="submit">
+<button class="w-full py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-headline font-bold text-base shadow-lg shadow-indigo-500/20 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2" type="button" onclick="signup()">
                             Sign Up
                             <span class="material-symbols-outlined text-xl">arrow_forward</span>
 </button>
@@ -175,12 +175,8 @@
 <div class="h-[1px] flex-1 bg-slate-800"></div>
 </div>
 <div class="flex gap-4 w-full">
-<button class="flex-1 flex items-center justify-center py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors active:scale-95 border border-slate-700">
-<span class="material-symbols-outlined text-slate-300">google</span>
-</button>
-<button class="flex-1 flex items-center justify-center py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors active:scale-95 border border-slate-700">
-<span class="material-symbols-outlined text-slate-300">ios</span>
-</button>
+
+
 </div>
 </div>
 </div>
@@ -188,7 +184,7 @@
 <div class="mt-8 text-center">
 <p class="font-body text-slate-400">
                     Already have an account? 
-                    <a class="text-indigo-400 font-bold ml-1 hover:underline underline-offset-4 decoration-2" href="#">Log In</a>
+                    <a class="text-indigo-400 font-bold ml-1 hover:underline underline-offset-4 decoration-2" href="login.html">Log In</a>
 </p>
 </div>
 </div>
@@ -210,4 +206,32 @@
 <div class="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-indigo-600/10 blur-[120px]"></div>
 <div class="absolute top-[60%] -right-[5%] w-[40%] h-[40%] rounded-full bg-blue-600/10 blur-[100px]"></div>
 </div>
+<script>
+  async function signup() {
+  const username = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirm_password").value;
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  const res = await fetch("http://localhost:5000/api/auth/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, email, password })
+  });
+
+  const data = await res.json();
+
+  if (data.message === "Signup successful") {
+    alert("Account created! Please log in.");
+    window.location.href = "login.html"; // ✅ redirect after signup
+  } else {
+    alert(data.error || "Signup failed");
+  }
+}
+</script>
 </body></html>

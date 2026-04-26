@@ -131,6 +131,12 @@ AI Guru Online
 </span>
 </div>
 
+<!-- ✅ LOGOUT BUTTON -->
+<button onclick="logout()"
+  class="px-4 py-2 rounded-xl text-sm font-semibold bg-red-500/20 hover:bg-red-500/40 border border-red-500/30 text-red-300 hover:text-white transition-all">
+   Logout
+</button>
+
 </header>
 
 
@@ -144,10 +150,35 @@ AI Guru Online
 <div></div><div></div><div></div><div></div><div></div>
 </div>
 
-<img
-class="w-full h-full object-contain rounded-full border-4 border-white/20 shadow-2xl"
-src="https://lh3.googleusercontent.com/aida-public/AB6AXuClA1pfGkuCmMaMxdMhkOH8KCkHz4DPqutfSO-Kd5LjcQc9324y8HcB76YoV_vAQOSaFmeCVsSAtmqcYg7ya7ltArMh4K9J1buJ3Il3lXZ9PWiiOeDeJsk-nqpL14eMR2tWxPmv_AuQRdPCFsw8eUrF-QakX4Um7u6YxEu0dNcP2X-l7mkPx3W4tM1VkKwv-pebyrVIvBHtdObzo8eZCEqkSiXU7EHOAah08odf1n9cZXSUmQcThTMfDKc72OmdulLKe7V3JvT7t-Y5"
-/>
+<div class="w-full h-full flex items-center justify-center rounded-full border-4 border-white/20 shadow-2xl"
+     style="background: radial-gradient(circle at 30% 30%, #2e1065, #0f0a1e);">
+  <svg width="160" height="160" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Head -->
+    <circle cx="40" cy="28" r="16" fill="#2e1065"/>
+    <circle cx="40" cy="28" r="16" stroke="#a855f7" stroke-width="1.5"/>
+    <!-- Eyes -->
+    <circle cx="34" cy="26" r="3" fill="#c4b5fd"/>
+    <circle cx="46" cy="26" r="3" fill="#c4b5fd"/>
+    <!-- Eyebrows -->
+    <path d="M28 22 Q32 18 36 20" stroke="#a855f7" stroke-width="1.5" fill="none"/>
+    <path d="M44 20 Q48 18 52 22" stroke="#a855f7" stroke-width="1.5" fill="none"/>
+    <!-- Smile -->
+    <path d="M34 34 Q40 38 46 34" stroke="#c4b5fd" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- Body -->
+    <path d="M24 44 Q40 36 56 44 L58 70 Q40 76 22 70 Z" fill="#2e1065" stroke="#a855f7" stroke-width="1.2"/>
+    <!-- Crown/halo -->
+    <path d="M32 10 Q40 4 48 10" stroke="#f59e0b" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="40" cy="6" r="3" fill="#f59e0b"/>
+    <!-- Ears -->
+    <path d="M18 30 Q14 28 15 35" stroke="#a855f7" stroke-width="1" fill="none"/>
+    <path d="M62 30 Q66 28 65 35" stroke="#a855f7" stroke-width="1" fill="none"/>
+    <!-- Glowing particles -->
+    <circle cx="62" cy="20" r="2" fill="#f59e0b" opacity="0.7"/>
+    <circle cx="18" cy="18" r="1.5" fill="#a855f7" opacity="0.6"/>
+    <circle cx="65" cy="45" r="1.5" fill="#c4b5fd" opacity="0.5"/>
+    <circle cx="15" cy="50" r="1" fill="#f59e0b" opacity="0.5"/>
+  </svg>
+</div>
 
 <div id="wave-right" class="sound-wave right-wave">
 <div></div><div></div><div></div><div></div><div></div>
@@ -209,6 +240,14 @@ class="bg-indigo-600 hover:bg-indigo-500 text-white p-3 rounded-xl">
 
 </div>
 
+<script src="../js/chat.js"></script>
+<script>
+  function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("chatId");
+    window.location.href = "landing.html";
+  }
+</script>
 <script src="../js/chat.js"></script>
 
 </body>
