@@ -5,8 +5,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>AI Guru - Log In</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -105,7 +105,7 @@
             AI Guru
         </div>
 <div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden ring-1 ring-white/10">
-<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="Close up portrait of a professional woman with a friendly expression in a modern office environment with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-zLL-isWX3YKPgWRwQL-GBES_uV1GrF7B4msPrchZ2iHCQtl8xH1vQD1GvF26GyQtyFmeNJxQlOz7hDpY5DtB-Ir12j--6MlWzNwsinUCnzTrHaV0fo3VLzCesKwQynlnB7nLAlk13dlw-ay7zbkOZ6_p98UTmyGcV6JVn4CBbwO47b5OM5_V2db7_lvAZX9Dtme1JI2nGVBE_VjVV3nAXf89e_ynsdF6kWQ8ssU9bNFFo1O1wkSCi3ADSWcqzSLOdiCVVTwyT-br"/>
+<img alt="User profile avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-zLL-isWX3YKPgWRwQL-GBES_uV1GrF7B4msPrchZ2iHCQtl8xH1vQD1GvF26GyQtyFmeNJxQlOz7hDpY5DtB-Ir12j--6MlWzNwsinUCnzTrHaV0fo3VLzCesKwQynlnB7nLAlk13dlw-ay7zbkOZ6_p98UTmyGcV6JVn4CBbwO47b5OM5_V2db7_lvAZX9Dtme1JI2nGVBE_VjVV3nAXf89e_ynsdF6kWQ8ssU9bNFFo1O1wkSCi3ADSWcqzSLOdiCVVTwyT-br"/>
 </div>
 </div>
 </header>
@@ -122,7 +122,7 @@
                 Resume your journey with your digital mentor and unlock new levels of insight.
             </p>
 </div>
-<!-- Login Card (Glassmorphism & Tonal Layering) -->
+<!-- Login Card -->
 <div class="bg-surface-container rounded-xl p-8 border border-white/5 shadow-2xl relative overflow-hidden">
 <!-- Decorative AI Glow -->
 <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl"></div>
@@ -155,12 +155,12 @@
 <!-- Signup Redirect -->
 <div class="mt-8 pt-6 border-t border-white/5 text-center">
 <p class="font-body text-sm text-on-surface-variant">
-                    New to the mentorship? 
-                    <a class="text-primary font-bold ml-1 hover:text-primary-fixed transition-colors" href="signup.html">Sign Up</a>
+                    New to the mentorship?
+                    <a class="text-primary font-bold ml-1 hover:text-primary-fixed transition-colors" href="/signup">Sign Up</a>
 </p>
 </div>
 </div>
-<!-- Visual Support / Bento Style Element -->
+<!-- Bento Style Elements -->
 <div class="mt-8 grid grid-cols-2 gap-4">
 <div class="bg-surface-container-low border border-white/5 p-4 rounded-xl flex items-center gap-3">
 <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary shadow-sm ring-1 ring-white/5">
@@ -178,14 +178,17 @@
 <div>
 <div class="font-label text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Sync</div>
 <div class="font-body text-xs text-on-surface">Real-time learning</div>
-
+</div>
+</div>
+</div>
+</div>
 </main>
 <script>
 async function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const res = await fetch("http://localhost:5000/api/auth/login", {
+  const res = await fetch("/api/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -197,7 +200,7 @@ async function login() {
 
   if (data.token) {
     localStorage.setItem("token", data.token);
-    window.location.href = "index.html";
+    window.location.href = "/chat";
   } else {
     alert(data.error);
   }
