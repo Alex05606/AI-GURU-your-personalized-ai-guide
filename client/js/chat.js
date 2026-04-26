@@ -4,39 +4,36 @@ const API_BASE = window.location.hostname === "localhost"
 
 let currentChatId = localStorage.getItem("chatId");
 let uploadedFileContent = null;
-const token = localStorage.getItem("token"); // ✅ MOVED OUTSIDE
+const token = localStorage.getItem("token");
 
 if (!currentChatId) {
     currentChatId = crypto.randomUUID();
     localStorage.setItem("chatId", currentChatId);
 }
+
 document.addEventListener("DOMContentLoaded", () => {
 
 const waveLeft = document.getElementById("wave-left");
 const waveRight = document.getElementById("wave-right");
-
 const chatContainer = document.getElementById("chat-container");
 const historyList = document.getElementById("history-list");
-
 const input = document.getElementById("chat-input");
 const sendButton = document.getElementById("send-btn");
-
 const voiceBtn = document.getElementById("voice-btn");
 const uploadBtn = document.getElementById("upload-btn");
 const fileInput = document.getElementById("file-input");
 
 if (!token) {
   window.location.href = "/login.html";
-  return; // ✅ added return so nothing else runs
+  return;
 }
 
 if (!chatContainer || !input || !sendButton) {
-console.error("UI elements missing");
-return;
+  console.error("UI elements missing");
+  return;
 }
 
-const SpeechRecognition =
-window.SpeechRecognition || window.webkitSpeechRecognition;
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 /* ---------------- FILE UPLOAD ---------------- */
 
@@ -64,7 +61,7 @@ if (uploadBtn && fileInput) {
             formData.append("pdf", file);
 
             try {
-                const response = await fetch("https://ai-guru-your-personalized-ai-guide.onrender.com/api/upload-pdf", {
+                const response = await fetch(`${API_BASE}/api/upload-pdf`, {
                     method: "POST",
                     body: formData
                 });
@@ -103,72 +100,53 @@ if (uploadBtn && fileInput) {
             reader.readAsText(file);
         }
     });
-
 }
-
 
 /* ---------------- SPEECH RECOGNITION ---------------- */
 
 if (SpeechRecognition) {
 
-const recognition = new SpeechRecognition();
+  const recognition = new SpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.continuous = false;
+  recognition.interimResults = false;
 
-recognition.lang = "en-US";
-recognition.continuous = false;
-recognition.interimResults = false;
+  if (voiceBtn) {
+    voiceBtn.addEventListener("click", () => {
+      const listenMsg = document.createElement("div");
+      listenMsg.className = "text-center text-sm opacity-70 mb-2";
+      listenMsg.textContent = "Listening...";
+      chatContainer.appendChild(listenMsg);
+      recognition.start();
+    });
+  }
 
-if (voiceBtn) {
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    console.log("Voice Input:", transcript);
+    input.value = transcript;
+    sendMessage();
+  };
 
-voiceBtn.addEventListener("click", () => {
-
-const listenMsg = document.createElement("div");
-
-listenMsg.className = "text-center text-sm opacity-70 mb-2";
-listenMsg.textContent = "Listening...";
-
-chatContainer.appendChild(listenMsg);
-
-recognition.start();
-
-});
-
-}
-
-recognition.onresult = (event) => {
-
-const transcript = event.results[0][0].transcript;
-
-console.log("Voice Input:", transcript);
-
-input.value = transcript;
-
-sendMessage();
-
-};
-
-recognition.onerror = (event) => {
-
-console.error("Speech recognition error:", event.error);
-
-};
+  recognition.onerror = (event) => {
+    console.error("Speech recognition error:", event.error);
+  };
 
 } else {
-
-console.warn("Speech recognition not supported in this browser.");
-
+  console.warn("Speech recognition not supported in this browser.");
 }
 
 /* ---------------- LOAD CHAT SESSIONS ---------------- */
 
 async function loadSessions() {
     try {
-        const response = await fetch("https://ai-guru-your-personalized-ai-guide.onrender.com/api/sessions", {
-            headers: { "Authorization": `Bearer ${token}` } // ✅ ADDED TOKEN
+        const response = await fetch(`${API_BASE}/api/sessions`, {
+            headers: { "Authorization": `Bearer ${token}` }
         });
 
         const sessions = await response.json();
 
-        if (!Array.isArray(sessions)) { // ✅ ADDED SAFETY CHECK
+        if (!Array.isArray(sessions)) {
             console.error("Sessions error:", sessions);
             return;
         }
@@ -217,13 +195,13 @@ async function loadChatHistory(chatId) {
         currentChatId = chatId;
         localStorage.setItem("chatId", chatId);
 
-        const response = await fetch(`https://ai-guru-your-personalized-ai-guide.onrender.com/api/history/${chatId}`, {
-            headers: { "Authorization": `Bearer ${token}` } // ✅ ADDED TOKEN
+        const response = await fetch(`${API_BASE}/api/history/${chatId}`, {
+            headers: { "Authorization": `Bearer ${token}` }
         });
 
         const messages = await response.json();
 
-        if (!Array.isArray(messages)) { // ✅ ADDED SAFETY CHECK
+        if (!Array.isArray(messages)) {
             console.error("History error:", messages);
             return;
         }
@@ -261,9 +239,9 @@ async function loadChatHistory(chatId) {
 
 async function deleteSession(chatId) {
     try {
-        await fetch(`https://ai-guru-your-personalized-ai-guide.onrender.com/api/session/${chatId}`, {
+        await fetch(`${API_BASE}/api/session/${chatId}`, {
             method: "DELETE",
-            headers: { "Authorization": `Bearer ${token}` } // ✅ ADDED TOKEN
+            headers: { "Authorization": `Bearer ${token}` }
         });
         if (currentChatId === chatId) {
             startNewChat();
@@ -285,144 +263,100 @@ function startNewChat() {
     `;
     loadSessions();
 }
+
 /* ---------------- SEND MESSAGE ---------------- */
 
 async function sendMessage() {
 
-const message = input.value.trim();
-console.log("File content being sent:", uploadedFileContent ? "YES - " + uploadedFileContent.length + " chars" : "NULL");
+  const message = input.value.trim();
+  console.log("File content being sent:", uploadedFileContent ? "YES - " + uploadedFileContent.length + " chars" : "NULL");
 
-if (!message) return;
+  if (!message) return;
 
-console.log("User:", message);
+  console.log("User:", message);
 
-/* USER MESSAGE */
+  const userDiv = document.createElement("div");
+  userDiv.className = "text-right mb-3";
+  userDiv.innerHTML = `
+    <div class="inline-block bg-indigo-600 px-4 py-2 rounded-xl">
+      ${message}
+    </div>
+  `;
+  chatContainer.appendChild(userDiv);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 
-const userDiv = document.createElement("div");
+  const loadingDiv = document.createElement("div");
+  loadingDiv.className = "text-left mb-3";
+  loadingDiv.innerHTML = `
+    <div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
+      AI Guru is thinking...
+    </div>
+  `;
+  chatContainer.appendChild(loadingDiv);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 
-userDiv.className = "text-right mb-3";
+  try {
 
-userDiv.innerHTML = `
-<div class="inline-block bg-indigo-600 px-4 py-2 rounded-xl">
-${message}
-</div>
-`;
+    const response = await fetch(`${API_BASE}/api/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        message: message,
+        chatId: currentChatId,
+        fileContent: uploadedFileContent
+      })
+    });
 
-chatContainer.appendChild(userDiv);
+    const data = await response.json();
+    console.log("AI:", data.reply);
 
-chatContainer.scrollTop = chatContainer.scrollHeight;
+    loadingDiv.remove();
 
+    const aiDiv = document.createElement("div");
+    aiDiv.className = "text-left mb-3";
+    aiDiv.innerHTML = `
+      <div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
+        ${data.reply}
+      </div>
+    `;
+    chatContainer.appendChild(aiDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    loadSessions();
 
+    const speech = new SpeechSynthesisUtterance(data.reply);
+    speech.lang = "en-US";
+    speech.rate = 1;
+    speech.pitch = 1;
 
-/* LOADING MESSAGE */
+    speech.onstart = () => {
+      if (waveLeft) waveLeft.classList.add("wave-active");
+      if (waveRight) waveRight.classList.add("wave-active");
+    };
 
-const loadingDiv = document.createElement("div");
+    speech.onend = () => {
+      if (waveLeft) waveLeft.classList.remove("wave-active");
+      if (waveRight) waveRight.classList.remove("wave-active");
+    };
 
-loadingDiv.className = "text-left mb-3";
+    speechSynthesis.cancel();
+    speechSynthesis.speak(speech);
 
-loadingDiv.innerHTML = `
-<div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
-AI Guru is thinking...
-</div>
-`;
+  } catch (error) {
+    console.error("Error:", error);
+    const errorDiv = document.createElement("div");
+    errorDiv.className = "text-left mb-3";
+    errorDiv.innerHTML = `
+      <div class="inline-block bg-red-500 px-4 py-2 rounded-xl">
+        Something went wrong.
+      </div>
+    `;
+    chatContainer.appendChild(errorDiv);
+  }
 
-chatContainer.appendChild(loadingDiv);
-
-chatContainer.scrollTop = chatContainer.scrollHeight;
-
-try {
-
-const response = await fetch("https://ai-guru-your-personalized-ai-guide.onrender.com/api/chat", {
-
-method: "POST",
-
-headers: {
-"Content-Type": "application/json",
-"Authorization": `Bearer ${token}`
-},
-
-body: JSON.stringify({
-    message: message,
-    chatId: currentChatId,
-    fileContent: uploadedFileContent
-})
-
-});
-
-const data = await response.json();
-
-console.log("AI:", data.reply);
-
-/* REMOVE LOADING */
-
-loadingDiv.remove();
-
-/* AI MESSAGE */
-
-const aiDiv = document.createElement("div");
-
-aiDiv.className = "text-left mb-3";
-
-aiDiv.innerHTML = `
-<div class="inline-block bg-white/20 px-4 py-2 rounded-xl">
-${data.reply}
-</div>
-`;
-
-chatContainer.appendChild(aiDiv);
-
-chatContainer.scrollTop = chatContainer.scrollHeight;
-loadSessions();
-
-/* ---------------- SPEECH SYNTHESIS ---------------- */
-
-const speech = new SpeechSynthesisUtterance(data.reply);
-
-speech.lang = "en-US";
-speech.rate = 1;
-speech.pitch = 1;
-
-/* START WAVES */
-
-speech.onstart = () => {
-
-if (waveLeft) waveLeft.classList.add("wave-active");
-if (waveRight) waveRight.classList.add("wave-active");
-
-};
-
-/* STOP WAVES */
-
-speech.onend = () => {
-
-if (waveLeft) waveLeft.classList.remove("wave-active");
-if (waveRight) waveRight.classList.remove("wave-active");
-
-};
-
-speechSynthesis.cancel();
-speechSynthesis.speak(speech);
-
-} catch (error) {
-
-console.error("Error:", error);
-
-const errorDiv = document.createElement("div");
-
-errorDiv.className = "text-left mb-3";
-
-errorDiv.innerHTML = `
-<div class="inline-block bg-red-500 px-4 py-2 rounded-xl">
-Something went wrong.
-</div>
-`;
-
-chatContainer.appendChild(errorDiv);
-
-}
-
-input.value = "";
-
+  input.value = "";
 }
 
 /* ---------------- BUTTON EVENTS ---------------- */
@@ -430,14 +364,14 @@ input.value = "";
 sendButton.addEventListener("click", sendMessage);
 
 input.addEventListener("keydown", function (e) {
-
-if (e.key === "Enter") {
-sendMessage();
-}
-
+  if (e.key === "Enter") {
+    sendMessage();
+  }
 });
+
 loadSessions();
 if (currentChatId) {
     loadChatHistory(currentChatId);
 }
+
 });
