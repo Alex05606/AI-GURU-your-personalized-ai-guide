@@ -1,247 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>AI Guru - Virtual Friend</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+* { box-sizing: border-box; }
 
-body{
-font-family:'Inter',sans-serif;
--webkit-tap-highlight-color:transparent;
+body {
+  font-family: 'Inter', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
 }
 
-/* Background */
-
-.bg-main-gradient{
-background:radial-gradient(circle at top right,#3b2b63,#1a1a2e);
-background-attachment:fixed;
+.bg-main-gradient {
+  background: radial-gradient(circle at top right, #3b2b63, #1a1a2e);
+  background-attachment: fixed;
 }
 
-/* Glass UI */
-
-.glass-card{
-background:rgba(255,255,255,0.1);
-backdrop-filter:blur(12px);
-border:1px solid rgba(255,255,255,0.1);
+.glass-card {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Floating Avatar */
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+.animate-float { animation: float 4s ease-in-out infinite; }
 
-@keyframes float{
-0%{transform:translateY(0px);}
-50%{transform:translateY(-15px);}
-100%{transform:translateY(0px);}
+.sound-wave {
+  position: absolute;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.left-wave  { left: -52px; }
+.right-wave { right: -52px; }
+
+.sound-wave div {
+  width: 3px;
+  height: 10px;
+  background: #60a5fa;
+  border-radius: 3px;
+  animation: wave 1s infinite ease-in-out;
+}
+.sound-wave div:nth-child(2) { animation-delay: 0.1s; }
+.sound-wave div:nth-child(3) { animation-delay: 0.2s; }
+.sound-wave div:nth-child(4) { animation-delay: 0.3s; }
+.sound-wave div:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes wave {
+  0%   { height: 8px; }
+  50%  { height: 32px; }
+  100% { height: 8px; }
+}
+.wave-active { opacity: 1; }
+
+.history-item {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.85rem;
+}
+.history-item:hover { background: rgba(255,255,255,0.14); }
+
+/* Mobile sidebar overlay */
+#sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 30;
+}
+#sidebar-overlay.active { display: block; }
+
+/* Sidebar drawer */
+#sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: 270px;
+  z-index: 40;
+  transform: translateX(-100%);
+  transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+  background: rgba(12,8,28,0.98);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+#sidebar.open { transform: translateX(0); }
+
+/* Desktop: sidebar always visible */
+@media (min-width: 768px) {
+  #sidebar {
+    position: relative;
+    transform: translateX(0) !important;
+    width: 260px;
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.3);
+  }
+  #sidebar-overlay { display: none !important; }
+  #menu-btn { display: none !important; }
 }
 
-.animate-float{
-animation:float 4s ease-in-out infinite;
+.avatar-wrap {
+  width: clamp(110px, 28vw, 170px);
+  aspect-ratio: 1;
 }
 
-/* Voice Wave */
+#chat-container::-webkit-scrollbar { width: 4px; }
+#chat-container::-webkit-scrollbar-track { background: transparent; }
+#chat-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
 
-.sound-wave{
-position:absolute;
-display:flex;
-gap:4px;
-align-items:center;
-opacity:0;
-}
+.bubble { word-break: break-word; max-width: 82%; }
 
-.left-wave{left:-70px;}
-.right-wave{right:-70px;}
-
-.sound-wave div{
-width:4px;
-height:12px;
-background:#60a5fa;
-border-radius:3px;
-animation:wave 1s infinite ease-in-out;
-}
-
-.sound-wave div:nth-child(2){animation-delay:0.1s;}
-.sound-wave div:nth-child(3){animation-delay:0.2s;}
-.sound-wave div:nth-child(4){animation-delay:0.3s;}
-.sound-wave div:nth-child(5){animation-delay:0.4s;}
-
-@keyframes wave{
-0%{height:10px;}
-50%{height:40px;}
-100%{height:10px;}
-}
-
-.wave-active{
-opacity:1;
-}
-
-/* Chat History Items */
-
-.history-item{
-padding:10px;
-border-radius:10px;
-background:rgba(255,255,255,0.05);
-cursor:pointer;
-transition:0.2s;
-}
-
-.history-item:hover{
-background:rgba(255,255,255,0.15);
-}
-
+#send-btn:active   { transform: scale(0.92); }
+#voice-btn:active  { transform: scale(0.88); }
+#upload-btn:active { transform: scale(0.88); }
 </style>
-
 </head>
 
-<body class="bg-main-gradient text-white h-screen flex">
+<body class="bg-main-gradient text-white h-screen flex overflow-hidden">
 
-<!-- LEFT SIDEBAR -->
+<!-- Overlay for mobile sidebar -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-<div class="w-64 p-4 border-r border-white/10 bg-black/30">
-
-<h2 class="text-lg font-semibold mb-4">Chat History</h2>
-
-<div id="history-list" class="space-y-2">
-
-<!-- Chat history items will appear here -->
-
-</div>
-
-</div>
-
-
-<!-- RIGHT MAIN CHAT AREA -->
-
-<div class="flex-1 flex flex-col items-center justify-between">
-
-<header class="p-6 flex justify-between items-center w-full">
-
-<div class="flex items-center space-x-2">
-<div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-<span class="text-sm font-medium tracking-wide opacity-80 uppercase">
-AI Guru Online
-</span>
-</div>
-
-<!-- LOGOUT BUTTON -->
-<button onclick="logout()"
-  class="px-4 py-2 rounded-xl text-sm font-semibold bg-red-500/20 hover:bg-red-500/40 border border-red-500/30 text-red-300 hover:text-white transition-all">
-   Logout
-</button>
-
-</header>
-
-
-<!-- Avatar Section -->
-
-<div class="flex flex-col items-center">
-
-<div class="relative w-60 aspect-square flex items-center justify-center animate-float">
-
-<div id="wave-left" class="sound-wave left-wave">
-<div></div><div></div><div></div><div></div><div></div>
-</div>
-
-<div class="w-full h-full flex items-center justify-center rounded-full border-4 border-white/20 shadow-2xl"
-     style="background: radial-gradient(circle at 30% 30%, #2e1065, #0f0a1e);">
-  <svg width="160" height="160" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Head -->
-    <circle cx="40" cy="28" r="16" fill="#2e1065"/>
-    <circle cx="40" cy="28" r="16" stroke="#a855f7" stroke-width="1.5"/>
-    <!-- Eyes -->
-    <circle cx="34" cy="26" r="3" fill="#c4b5fd"/>
-    <circle cx="46" cy="26" r="3" fill="#c4b5fd"/>
-    <!-- Eyebrows -->
-    <path d="M28 22 Q32 18 36 20" stroke="#a855f7" stroke-width="1.5" fill="none"/>
-    <path d="M44 20 Q48 18 52 22" stroke="#a855f7" stroke-width="1.5" fill="none"/>
-    <!-- Smile -->
-    <path d="M34 34 Q40 38 46 34" stroke="#c4b5fd" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-    <!-- Body -->
-    <path d="M24 44 Q40 36 56 44 L58 70 Q40 76 22 70 Z" fill="#2e1065" stroke="#a855f7" stroke-width="1.2"/>
-    <!-- Crown/halo -->
-    <path d="M32 10 Q40 4 48 10" stroke="#f59e0b" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <circle cx="40" cy="6" r="3" fill="#f59e0b"/>
-    <!-- Ears -->
-    <path d="M18 30 Q14 28 15 35" stroke="#a855f7" stroke-width="1" fill="none"/>
-    <path d="M62 30 Q66 28 65 35" stroke="#a855f7" stroke-width="1" fill="none"/>
-    <!-- Glowing particles -->
-    <circle cx="62" cy="20" r="2" fill="#f59e0b" opacity="0.7"/>
-    <circle cx="18" cy="18" r="1.5" fill="#a855f7" opacity="0.6"/>
-    <circle cx="65" cy="45" r="1.5" fill="#c4b5fd" opacity="0.5"/>
-    <circle cx="15" cy="50" r="1" fill="#f59e0b" opacity="0.5"/>
-  </svg>
-</div>
-
-<div id="wave-right" class="sound-wave right-wave">
-<div></div><div></div><div></div><div></div><div></div>
-</div>
-
-</div>
-
-<!-- CHAT MESSAGES -->
-
-<div id="chat-container"
-class="glass-card p-6 rounded-3xl shadow-xl relative max-h-[300px] overflow-y-auto mt-6 w-[600px]">
-
-<p class="text-blue-50">
-Hi! I am your AI Guru. I am here to help you solve your problems.
-</p>
-
-</div>
-
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="flex items-center justify-between mb-5 shrink-0">
+    <h2 class="text-base font-semibold tracking-wide">Chat History</h2>
+    <button onclick="closeSidebar()"
+            class="md:hidden p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition text-sm">
+      ✕
+    </button>
+  </div>
+  <div id="history-list" class="space-y-2 overflow-y-auto flex-1">
+    <!-- populated by chat.js -->
+  </div>
 </div>
 
 
-<!-- INPUT AREA -->
+<!-- MAIN CHAT AREA -->
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
-<footer class="p-6 w-full flex justify-center">
+  <!-- HEADER -->
+  <header class="flex items-center justify-between px-4 py-3 border-b border-white/10 shrink-0">
+    <div class="flex items-center gap-3">
+      <button id="menu-btn" onclick="openSidebar()"
+              class="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition text-white leading-none text-xl">
+        ☰
+      </button>
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+        <span class="text-xs font-semibold tracking-widest uppercase opacity-75">
+          <span class="hidden sm:inline">AI Guru </span>Online
+        </span>
+      </div>
+    </div>
+    <button onclick="logout()"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-500/20 hover:bg-red-500/40 border border-red-500/30 text-red-300 hover:text-white transition-all">
+      Logout
+    </button>
+  </header>
 
-<div class="w-[600px] flex items-center glass-card rounded-2xl p-2 gap-2">
+  <!-- AVATAR -->
+  <div class="flex justify-center pt-4 pb-2 shrink-0">
+    <div class="relative avatar-wrap flex items-center justify-center animate-float">
 
-<button id="voice-btn" class="p-3 text-blue-300 hover:text-white">
-🎤
-</button>
+      <div id="wave-left" class="sound-wave left-wave">
+        <div></div><div></div><div></div><div></div><div></div>
+      </div>
 
-<button id="upload-btn" class="p-3 text-blue-300 hover:text-white">
-📤
-</button>
+      <div class="w-full h-full flex items-center justify-center rounded-full border-4 border-white/20 shadow-2xl"
+           style="background: radial-gradient(circle at 30% 30%, #2e1065, #0f0a1e);">
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"
+             style="width:65%; height:65%;">
+          <circle cx="40" cy="28" r="16" fill="#2e1065"/>
+          <circle cx="40" cy="28" r="16" stroke="#a855f7" stroke-width="1.5"/>
+          <circle cx="34" cy="26" r="3" fill="#c4b5fd"/>
+          <circle cx="46" cy="26" r="3" fill="#c4b5fd"/>
+          <path d="M28 22 Q32 18 36 20" stroke="#a855f7" stroke-width="1.5" fill="none"/>
+          <path d="M44 20 Q48 18 52 22" stroke="#a855f7" stroke-width="1.5" fill="none"/>
+          <path d="M34 34 Q40 38 46 34" stroke="#c4b5fd" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M24 44 Q40 36 56 44 L58 70 Q40 76 22 70 Z" fill="#2e1065" stroke="#a855f7" stroke-width="1.2"/>
+          <path d="M32 10 Q40 4 48 10" stroke="#f59e0b" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="40" cy="6" r="3" fill="#f59e0b"/>
+          <path d="M18 30 Q14 28 15 35" stroke="#a855f7" stroke-width="1" fill="none"/>
+          <path d="M62 30 Q66 28 65 35" stroke="#a855f7" stroke-width="1" fill="none"/>
+          <circle cx="62" cy="20" r="2" fill="#f59e0b" opacity="0.7"/>
+          <circle cx="18" cy="18" r="1.5" fill="#a855f7" opacity="0.6"/>
+          <circle cx="65" cy="45" r="1.5" fill="#c4b5fd" opacity="0.5"/>
+          <circle cx="15" cy="50" r="1" fill="#f59e0b" opacity="0.5"/>
+        </svg>
+      </div>
 
-<input type="file" id="file-input" hidden>
+      <div id="wave-right" class="sound-wave right-wave">
+        <div></div><div></div><div></div><div></div><div></div>
+      </div>
+    </div>
+  </div>
 
-<input
-id="chat-input"
-placeholder="Ask me anything..."
-class="flex-grow bg-transparent border-none focus:ring-0 text-white placeholder-white/40 py-3 px-2"
-/>
+  <!-- CHAT MESSAGES -->
+  <div id="chat-container"
+       class="glass-card mx-3 mb-2 rounded-2xl p-4 flex-1 overflow-y-auto">
+    <p class="text-blue-100 text-sm leading-relaxed">
+      Hi! I am your AI Guru. I am here to help you solve your problems. 🙏
+    </p>
+  </div>
 
-<button
-id="send-btn"
-class="bg-indigo-600 hover:bg-indigo-500 text-white p-3 rounded-xl">
-➤
-</button>
+  <!-- INPUT BAR -->
+  <div class="px-3 pb-3 shrink-0" style="padding-bottom: max(12px, env(safe-area-inset-bottom));">
+    <div class="glass-card rounded-2xl p-2 flex items-center gap-2">
 
-</div>
+      <button id="voice-btn"
+              class="p-2.5 text-blue-300 hover:text-white transition shrink-0 rounded-xl hover:bg-white/10 text-lg leading-none">
+        🎤
+      </button>
 
-</footer>
+      <button id="upload-btn"
+              class="p-2.5 text-blue-300 hover:text-white transition shrink-0 rounded-xl hover:bg-white/10 text-lg leading-none">
+        📤
+      </button>
 
-</div>
+      <input type="file" id="file-input" hidden>
 
-<script src="/js/chat.js"></script>
+      <input
+        id="chat-input"
+        placeholder="Ask me anything..."
+        autocomplete="off"
+        class="flex-1 min-w-0 bg-transparent border-none focus:ring-0 text-white placeholder-white/40 py-2.5 px-1 text-sm"
+      />
+
+      <button id="send-btn"
+              class="bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-xl shrink-0 transition text-base leading-none">
+        ➤
+      </button>
+
+    </div>
+  </div>
+
+</div><!-- end MAIN -->
+
 <script>
+  function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar-overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
   function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("chatId");
-    window.location.href = "/";
+    window.location.href = "/landing.html";
   }
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) closeSidebar();
+  });
 </script>
+
+<script src="/js/chat.js"></script>
 
 </body>
 </html>
