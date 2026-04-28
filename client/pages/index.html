@@ -270,7 +270,7 @@ body {
   function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("chatId");
-    window.location.href = "/landing.html";
+    window.location.href = "/";
   }
   window.addEventListener('resize', () => {
     if (window.innerWidth >= 768) closeSidebar();

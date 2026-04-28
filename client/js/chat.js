@@ -24,7 +24,7 @@ const uploadBtn = document.getElementById("upload-btn");
 const fileInput = document.getElementById("file-input");
 
 if (!token) {
-  window.location.href = "/login.html";
+  window.location.href = "/login";
   return;
 }
 
