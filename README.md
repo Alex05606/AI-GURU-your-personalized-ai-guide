@@ -45,7 +45,7 @@ It acts like a smart tutor that not only answers questions but also helps users 
 > (Update this section based on what you actually used)
 
 - **Frontend:** React / HTML / CSS / JavaScript  
-- **Backend:** Node.js  
+- **Backend:** Node.js  / Express.js
 - **Database:** Turso Database  
 - **AI Integration:** Groq API 
 - **Deployment:** Render  
