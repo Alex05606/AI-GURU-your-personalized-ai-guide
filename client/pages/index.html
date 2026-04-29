@@ -123,6 +123,20 @@ body {
   aspect-ratio: 1;
 }
 
+/* Critical fix: prevent flex children from overflowing */
+html, body { height: 100%; max-height: 100dvh; overflow: hidden; }
+body { height: 100dvh; }
+
+/* Make the main column a proper flex column with constrained height */
+body > .flex-1 { min-height: 0; overflow: hidden; }
+
+/* Chat container must shrink, not grow unbounded */
+#chat-container {
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 #chat-container::-webkit-scrollbar { width: 4px; }
 #chat-container::-webkit-scrollbar-track { background: transparent; }
 #chat-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
@@ -135,7 +149,7 @@ body {
 </style>
 </head>
 
-<body class="bg-main-gradient text-white h-screen flex overflow-hidden">
+<body class="bg-main-gradient text-white flex overflow-hidden" style="height:100dvh;">
 
 <!-- Overlay for mobile sidebar -->
 <div id="sidebar-overlay" onclick="closeSidebar()"></div>
@@ -156,7 +170,7 @@ body {
 
 
 <!-- MAIN CHAT AREA -->
-<div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+<div class="flex-1 flex flex-col min-w-0 min-h-0 overflow-hidden" style="height:100%;max-height:100dvh;">
 
   <!-- HEADER -->
   <header class="flex items-center justify-between px-4 py-3 border-b border-white/10 shrink-0">
