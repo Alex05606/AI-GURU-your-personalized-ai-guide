@@ -33,6 +33,23 @@ if (!chatContainer || !input || !sendButton) {
   return;
 }
 
+// Unlock speech synthesis on first user interaction (required on mobile)
+const unlockSpeech = () => {
+  if (window._speechUnlocked) return;
+  const silent = new SpeechSynthesisUtterance("");
+  silent.volume = 0;
+  speechSynthesis.speak(silent);
+  window._speechUnlocked = true;
+  if (window._pendingSpeech) {
+    window._pendingSpeech();
+    window._pendingSpeech = null;
+  }
+  document.removeEventListener("touchstart", unlockSpeech);
+  document.removeEventListener("click", unlockSpeech);
+};
+document.addEventListener("touchstart", unlockSpeech, { once: true });
+document.addEventListener("click", unlockSpeech, { once: true });
+
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 /* ---------------- FILE UPLOAD ---------------- */
@@ -326,23 +343,35 @@ async function sendMessage() {
     chatContainer.scrollTop = chatContainer.scrollHeight;
     loadSessions();
 
-    const speech = new SpeechSynthesisUtterance(data.reply);
-    speech.lang = "en-US";
-    speech.rate = 1;
-    speech.pitch = 1;
+    const replyText = data.reply.replace(/<[^>]*>/g, ""); // strip HTML tags
 
-    speech.onstart = () => {
-      if (waveLeft) waveLeft.classList.add("wave-active");
-      if (waveRight) waveRight.classList.add("wave-active");
+    const speakReply = () => {
+      const speech = new SpeechSynthesisUtterance(replyText);
+      speech.lang = "en-US";
+      speech.rate = 1;
+      speech.pitch = 1;
+
+      speech.onstart = () => {
+        if (waveLeft) waveLeft.classList.add("wave-active");
+        if (waveRight) waveRight.classList.add("wave-active");
+      };
+
+      speech.onend = () => {
+        if (waveLeft) waveLeft.classList.remove("wave-active");
+        if (waveRight) waveRight.classList.remove("wave-active");
+      };
+
+      speechSynthesis.cancel();
+      speechSynthesis.speak(speech);
     };
 
-    speech.onend = () => {
-      if (waveLeft) waveLeft.classList.remove("wave-active");
-      if (waveRight) waveRight.classList.remove("wave-active");
-    };
-
-    speechSynthesis.cancel();
-    speechSynthesis.speak(speech);
+    // Mobile browsers require speech to be inside a user-gesture context.
+    // We resume the audio context via a silent utterance trick, then speak.
+    if (window._speechUnlocked) {
+      speakReply();
+    } else {
+      window._pendingSpeech = speakReply;
+    }
 
   } catch (error) {
     console.error("Error:", error);
